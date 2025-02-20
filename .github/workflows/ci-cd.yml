@@ -16,8 +16,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Checkout main branch
-        run: git checkout main
+      - name: Prune existing worktrees
+        run: git worktree prune
+
+      - name: Setup Git Worktree
+        run: git worktree add --no-checkout --detach github-pages-deploy-action-temp-deployment-folder
+
+      - name: Checkout Branch
+        run: git checkout -B main origin/main
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
