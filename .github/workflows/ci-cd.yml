@@ -27,11 +27,13 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: List build directory (for debugging)
-        run: ls -la dist
+      - name: List dist directory (for debugging)
+        run: ls -la dist # Ensure the folder exists
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          branch: gh-pages # Deployment branch
-          folder: dist
+          branch: main # ✅ Deploy directly from main branch
+          folder: dist # ✅ Correct folder for Vite
+          clean: true # Remove old files before deploying
+          token: ${{ secrets.GITHUB_TOKEN }} # Ensure authentication
