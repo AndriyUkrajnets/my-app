@@ -3,7 +3,7 @@ name: Deploy React App
 on:
   push:
     branches:
-      - main # Adjust to your default branch
+      - main
   pull_request:
     branches:
       - main
@@ -28,7 +28,7 @@ jobs:
         run: npm run build
 
       - name: List build directory (for debugging)
-        run: ls -la build
+        run: ls -la dist
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
