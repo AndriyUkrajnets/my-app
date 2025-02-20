@@ -4,29 +4,39 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Checkout main branch
+        run: git checkout main
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
-          fetch-depth: 0
+          node-version: 18
 
-      - name: Remove existing worktree if exists
-        run: |
-          if [ -d "github-pages-deploy-action-temp-deployment-folder" ]; then
-            git worktree remove github-pages-deploy-action-temp-deployment-folder --force
-          fi
+      - name: Install dependencies
+        run: npm ci # Ensures a clean install
 
-      - name: Add new worktree
-        run: |
-          git worktree add --no-checkout --detach github-pages-deploy-action-temp-deployment-folder
+      - name: Build project
+        run: npm run build
+
+      - name: List dist directory (for debugging)
+        run: ls -la dist # Ensure the folder exists
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          branch: main
-          folder: dist
+          branch: main # ✅ Deploy directly from main branch
+          folder: dist # ✅ Correct folder for Vite
+          clean: true # Remove old files before deploying
+          token: ${{ secrets.GITHUB_TOKEN }} # Ensure authentication
