@@ -1,0 +1,22 @@
+name: React App CI/CD
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: npm install
+      - name: Build and test
+        run: npm run build && npm run test
+      - name: Deploy to production
+        uses: appleboy/ssh-action@v0
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          script: npm run deploy
